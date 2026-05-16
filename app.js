@@ -16,11 +16,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/eval", (req, res) => {
-    const data = req.query.data;
-
-    const result = eval(data);
-
-    res.send(result.toString());
+    res.send("Feature disabled");
 });
 
 app.listen(3000, "0.0.0.0", () => {
