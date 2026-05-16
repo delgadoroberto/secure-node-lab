@@ -19,6 +19,6 @@ app.get("/eval", (req, res) => {
     res.send("Feature disabled");
 });
 
-app.listen(3000, "0.0.0.0", () => {
+app.listen(3000, "127.0.0.1", () => {
     console.log("App running");
 });
