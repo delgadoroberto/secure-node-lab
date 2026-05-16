@@ -2,7 +2,7 @@ const express = require("express");
 
 const app = express();
 
-const API_KEY = "SUPER-SECRET-KEY-123";
+const API_KEY = process.env.API_KEY;
 
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
