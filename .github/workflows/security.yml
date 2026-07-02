@@ -14,7 +14,7 @@ permissions:
   security-events: write
 
 concurrency:
-  group: security-${{ github.ref }}
+  group: security-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -38,7 +38,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: "20"
           cache: npm
 
       ####################################################################
@@ -54,16 +54,19 @@ jobs:
 
       - name: Display Environment Information
         run: |
+          echo "Node Version:"
           node --version
+          echo ""
+
+          echo "NPM Version:"
           npm --version
 
       ####################################################################
-      # Dependency Vulnerability Scan
+      # Dependency Vulnerability Scan (SCA)
       ####################################################################
 
       - name: Run npm Audit
-        run: |
-          npm audit --audit-level=high
+        run: npm audit --audit-level=high
 
       ####################################################################
       # Static Application Security Testing (SAST)
@@ -71,8 +74,8 @@ jobs:
 
       - name: Run Semgrep
         uses: returntocorp/semgrep-action@v1
-        env:
-          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
+        with:
+          config: auto
         continue-on-error: true
 
       ####################################################################
@@ -91,11 +94,18 @@ jobs:
       - name: Security Pipeline Summary
         if: always()
         run: |
-          echo "=================================="
-          echo " Security Pipeline Finished"
-          echo "=================================="
+          echo "========================================="
+          echo "      Security Pipeline Completed"
+          echo "========================================="
           echo ""
-          echo "Completed checks:"
-          echo " - Dependency Scan (npm audit)"
-          echo " - Static Analysis (Semgrep)"
-          echo " - Secret Detection (Gitleaks)"
+          echo "Completed Security Controls:"
+          echo "  ✓ Dependency Scan (npm audit)"
+          echo "  ✓ Static Analysis (Semgrep OSS)"
+          echo "  ✓ Secret Detection (Gitleaks)"
+          echo ""
+          echo "Future integrations:"
+          echo "  • CodeQL"
+          echo "  • Trivy"
+          echo "  • Dependency Review"
+          echo "  • SBOM Generation"
+          echo "  • Docker Image Scanning"
